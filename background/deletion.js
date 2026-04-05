@@ -9,6 +9,8 @@
 const Deletion = (() => {
   "use strict";
 
+  const DEBUG = false;
+
   const TOGGLE_STORAGE_KEY = "domainToggles";
 
   // baseDomain -> boolean (true = auto-delete ON)
@@ -62,7 +64,7 @@ const Deletion = (() => {
       domain: DomainUtils.stripLeadingDot(cookie.domain),
       cookieName: cookie.name,
     });
-    console.log("[DomainGuard] Deleted cookie:", cookie.name, "from", cookie.domain);
+    if (DEBUG) console.log("[DomainGuard] Deleted cookie:", cookie.name, "from", cookie.domain);
     return { success: true };
   }
 
@@ -88,7 +90,7 @@ const Deletion = (() => {
       storageType: storageType,
       key: key,
     });
-    console.log("[DomainGuard] Deleted", storageType, "storage item:", key);
+    if (DEBUG) console.log("[DomainGuard] Deleted", storageType, "storage item:", key);
     return { success: true };
   }
 
@@ -111,7 +113,7 @@ const Deletion = (() => {
       action: "clear-storage",
       storageType: storageType,
     });
-    console.log("[DomainGuard] Cleared", storageType, "storage");
+    if (DEBUG) console.log("[DomainGuard] Cleared", storageType, "storage");
     return { success: true };
   }
 
@@ -127,7 +129,7 @@ const Deletion = (() => {
    * Does NOT touch third-party data (bottom section).
    */
   async function autoDeleteForDomain(baseDomain) {
-    console.log("[DomainGuard] Auto-deleting data for", baseDomain);
+    if (DEBUG) console.log("[DomainGuard] Auto-deleting data for", baseDomain);
 
     // Delete cookies
     try {
@@ -140,7 +142,7 @@ const Deletion = (() => {
           storeId: cookie.storeId,
         });
       }
-      console.log("[DomainGuard] Auto-deleted", cookies.length, "cookies for", baseDomain);
+      if (DEBUG) console.log("[DomainGuard] Auto-deleted", cookies.length, "cookies for", baseDomain);
     } catch (e) {
       console.error("[DomainGuard] Failed to auto-delete cookies for", baseDomain, e);
     }
@@ -156,7 +158,7 @@ const Deletion = (() => {
           sessionStorage: true,
         }
       );
-      console.log("[DomainGuard] Auto-deleted storage for", baseDomain);
+      if (DEBUG) console.log("[DomainGuard] Auto-deleted storage for", baseDomain);
     } catch (e) {
       console.error("[DomainGuard] Failed to auto-delete storage for", baseDomain, e);
     }
@@ -192,7 +194,7 @@ const Deletion = (() => {
     toggleState.set(baseDomain, enabled);
     await saveToggles();
     await broadcastToggleChange(baseDomain, enabled);
-    console.log("[DomainGuard] Toggle for", baseDomain, "set to", enabled);
+    if (DEBUG) console.log("[DomainGuard] Toggle for", baseDomain, "set to", enabled);
   }
 
   /**
@@ -245,7 +247,7 @@ const Deletion = (() => {
    */
   async function init() {
     await loadToggles();
-    console.log("[DomainGuard] Deletion initialized —", toggleState.size, "domain toggles loaded");
+    if (DEBUG) console.log("[DomainGuard] Deletion initialized —", toggleState.size, "domain toggles loaded");
   }
 
   return {

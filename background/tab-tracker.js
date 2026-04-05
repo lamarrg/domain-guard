@@ -8,6 +8,8 @@
 const TabTracker = (() => {
   "use strict";
 
+  const DEBUG = false;
+
   // tabId -> baseDomain
   const tabToDomain = new Map();
 
@@ -32,7 +34,7 @@ const TabTracker = (() => {
     if (closeTimers.has(domain)) {
       clearTimeout(closeTimers.get(domain));
       closeTimers.delete(domain);
-      console.log("[DomainGuard] Close timer cancelled for", domain);
+      if (DEBUG) console.log("[DomainGuard] Close timer cancelled for", domain);
     }
   }
 
@@ -59,14 +61,14 @@ const TabTracker = (() => {
 
     const timerId = setTimeout(() => {
       closeTimers.delete(domain);
-      console.log("[DomainGuard] Domain closed:", domain);
+      if (DEBUG) console.log("[DomainGuard] Domain closed:", domain);
       if (domainClosedCallback) {
         domainClosedCallback(domain);
       }
     }, 500);
 
     closeTimers.set(domain, timerId);
-    console.log("[DomainGuard] Close timer started for", domain);
+    if (DEBUG) console.log("[DomainGuard] Close timer started for", domain);
   }
 
   /**
@@ -165,7 +167,7 @@ const TabTracker = (() => {
     browser.tabs.onUpdated.addListener(onTabUpdated);
     browser.tabs.onRemoved.addListener(onTabRemoved);
 
-    console.log("[DomainGuard] TabTracker initialized —", tabToDomain.size, "tabs tracked across", domainTabCount.size, "domains");
+    if (DEBUG) console.log("[DomainGuard] TabTracker initialized —", tabToDomain.size, "tabs tracked across", domainTabCount.size, "domains");
   }
 
   return { getDomainForTab, getTabCount, onDomainClosed, init };

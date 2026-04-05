@@ -6,7 +6,9 @@
 (async () => {
   "use strict";
 
-  console.log("[DomainGuard] Extension loaded.");
+  const DEBUG = false;
+
+  if (DEBUG) console.log("[DomainGuard] Extension loaded.");
 
   // Sequential init — each module must be ready before the next starts
   await TabTracker.init();
@@ -138,7 +140,7 @@
               });
             }
           } catch (e) {
-            console.warn("[DomainGuard] Failed to delete third-party cookies for", domain, e);
+            if (DEBUG) console.warn("[DomainGuard] Failed to delete third-party cookies for", domain, e);
           }
         }
         await RequestLogger.clearAllRecords();
@@ -159,5 +161,5 @@
     return false;
   });
 
-  console.log("[DomainGuard] Message router registered.");
+  if (DEBUG) console.log("[DomainGuard] Message router registered.");
 })();

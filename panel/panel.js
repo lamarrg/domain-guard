@@ -1,6 +1,8 @@
 "use strict";
 
 (() => {
+  const DEBUG = false;
+
   // --- State ---
   let currentTabId = null;
   let currentWindowId = null;
@@ -49,7 +51,7 @@
     setupEventListeners();
     await loadTab(tab);
 
-    console.log("[DomainGuard] Panel loaded for domain:", currentDomain);
+    if (DEBUG) console.log("[DomainGuard] Panel loaded for domain:", currentDomain);
   }
 
   function setupEventListeners() {
@@ -205,7 +207,7 @@
       });
       renderCookies(cookies || []);
     } catch (e) {
-      console.warn("[DomainGuard] Failed to fetch cookies:", e);
+      if (DEBUG) console.warn("[DomainGuard] Failed to fetch cookies:", e);
       renderCookies([]);
     }
   }
@@ -233,7 +235,7 @@
       // Stale check — don't update UI if tab changed
       if (currentTabId !== myTabId) return;
 
-      console.warn("[DomainGuard] Storage data unavailable — timeout or error");
+      if (DEBUG) console.warn("[DomainGuard] Storage data unavailable — timeout or error");
       showStorageUnavailable();
     }
   }
@@ -247,7 +249,7 @@
       });
       toggleCheckbox.checked = enabled;
     } catch (e) {
-      console.warn("[DomainGuard] Failed to fetch toggle state:", e);
+      if (DEBUG) console.warn("[DomainGuard] Failed to fetch toggle state:", e);
       toggleCheckbox.checked = true; // Default ON
     }
   }
@@ -267,7 +269,7 @@
         renderMoreThirdParty();
       }
     } catch (e) {
-      console.warn("[DomainGuard] Failed to fetch third-party records:", e);
+      if (DEBUG) console.warn("[DomainGuard] Failed to fetch third-party records:", e);
       thirdPartyRecords = [];
       badgeThirdParty.textContent = "0";
       listThirdParty.innerHTML = '<li class="empty-message">No third-party data recorded</li>';

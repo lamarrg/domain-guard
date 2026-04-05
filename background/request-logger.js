@@ -9,6 +9,8 @@
 const RequestLogger = (() => {
   "use strict";
 
+  const DEBUG = false;
+
   const STORAGE_KEY = "thirdPartyRecords";
   const BATCH_INTERVAL_MS = 2000;
   const PRUNE_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -94,7 +96,7 @@ const RequestLogger = (() => {
           cookiesByDomain.set(domain, cookies);
         }
       } catch (e) {
-        console.warn("[DomainGuard] Cookie lookup failed for", domain, e);
+        if (DEBUG) console.warn("[DomainGuard] Cookie lookup failed for", domain, e);
       }
     }
 
@@ -139,7 +141,7 @@ const RequestLogger = (() => {
     // Persist
     await saveRecords();
 
-    console.log(
+    if (DEBUG) console.log(
       "[DomainGuard] Batch processed:",
       batch.length,
       "requests,",
@@ -163,7 +165,7 @@ const RequestLogger = (() => {
       }
     }
     if (pruned > 0) {
-      console.log("[DomainGuard] Pruned", pruned, "records older than 30 days");
+      if (DEBUG) console.log("[DomainGuard] Pruned", pruned, "records older than 30 days");
     }
   }
 
@@ -221,7 +223,7 @@ const RequestLogger = (() => {
     } catch (e) {
       console.error("[DomainGuard] Failed to clear records:", e);
     }
-    console.log("[DomainGuard] All third-party records cleared");
+    if (DEBUG) console.log("[DomainGuard] All third-party records cleared");
   }
 
   /**
@@ -237,7 +239,7 @@ const RequestLogger = (() => {
 
     setInterval(processBatch, BATCH_INTERVAL_MS);
 
-    console.log(
+    if (DEBUG) console.log(
       "[DomainGuard] RequestLogger initialized —",
       records.size,
       "records loaded"
